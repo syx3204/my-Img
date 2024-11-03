@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自定义弹出确认框</title>
+<style>
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-image: url('https://via.placeholder.com/1500'); /* 背景图片 */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.1); /* 半透明灰色毛玻璃 */
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.5s ease;
+}
+
+#confirmBox {
+    position: absolute;
+    top: 50%; /* 垂直居中 */
+    left: 50%; /* 水平居中 */
+    transform: translate(-50%, -50%) translateY(50px); /* 初始位置在屏幕下方 */
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+#confirmBox.show {
+    transform: translate(-50%, -50%) translateY(0); /* 显示时的位置 */
+    opacity: 1;
+}
+
+#overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+#confirmBox > *:not(:last-child) {
+    margin-bottom: 10px;
+}
+
+/* 新增样式：圆角矩形选项 */
+.option {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    border-radius: 20px; /* 圆角 */
+    background-color: #007bff; /* 蓝色背景 */
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.option:hover {
+    background-color: #0056b3; /* 鼠标悬停时颜色变深 */
+}
+</style>
+</head>
+<body>
+
+<div id="overlay">
+    <div id="confirmBox">
+        <h2 id="confirmTitle"></h2>
+        <p id="confirmContent"></p>
+        <div id="confirmOptions">
+            <div class="option" id="confirmBtn"></div>
+            <div class="option" id="cancelBtn"></div>
+        </div>
+    </div>
+</div>
+
+<button onclick="showConfirm('提示', '确定要删除这个文件吗？', '确定', '取消')">显示弹出框</button>
+
+<script>
+function showConfirm(title = '提示', content = '这是一个确认框', confirmText = '确认', cancelText = '取消') {
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmContent').textContent = content;
+    document.getElementById('confirmBtn').textContent = confirmText;
+    document.getElementById('confirmBtn').onclick = () => {
+        alert('你选择了确认');
+        hideConfirm();
+    };
+    document.getElementById('cancelBtn').textContent = cancelText;
+    document.getElementById('cancelBtn').onclick = () => {
+        alert('你选择了取消');
+        hideConfirm();
+    };
+
+    document.getElementById('overlay').classList.add('show');
+    document.getElementById('confirmBox').classList.add('show');
+}
+
+function hideConfirm() {
+    const overlay = document.getElementById('overlay');
+    const confirmBox = document.getElementById('confirmBox');
+
+    // 先移除 show 类，使动画开始
+    overlay.classList.remove('show');
+    confirmBox.classList.remove('show');
+
+    // 延迟一段时间后，再完全隐藏元素
+    setTimeout(() => {
+        overlay.style.display = 'none';
+        confirmBox.style.display = 'none';
+    }, 500); // 与 CSS 过渡时间一致
+}
+</script>
+
+</body>
+</html>
